@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trustless Sovereignty Architecture</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Libre+Franklin:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+  <style>
+    @page { size: A4; margin: 0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Libre Franklin', system-ui, sans-serif;
+      background: #fff;
+      color: #1A1A1E;
+      width: 210mm;
+      min-height: 297mm;
+      margin: 0 auto;
+      padding: 28mm 24mm 20mm;
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 2px solid #1A1A1E;
+    }
+    .header-left h1 {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.2;
+      font-optical-sizing: auto;
+    }
+    .header-left .sub {
+      font-size: 12px;
+      color: #5A5D64;
+      margin-top: 4px;
+    }
+    .header-right {
+      text-align: right;
+      font-size: 11px;
+      color: #5A5D64;
+      line-height: 1.6;
+    }
+
+    .thesis {
+      background: #F0F0EC;
+      padding: 16px 20px;
+      margin-bottom: 20px;
+    }
+    .thesis p {
+      font-size: 13px;
+      line-height: 1.6;
+      color: #1A1A1E;
+    }
+    .thesis strong { font-weight: 600; }
+
+    h2 {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 10px;
+      color: #2D5F8A;
+      letter-spacing: 0.01em;
+    }
+
+    .comp-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+    .comp-table th {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-align: left;
+      padding: 6px 8px;
+      border-bottom: 1.5px solid #DDDDD8;
+      color: #8B8E94;
+    }
+    .comp-table td {
+      padding: 5px 8px;
+      font-size: 11px;
+      border-bottom: 1px solid #EDEDEA;
+      vertical-align: top;
+      line-height: 1.45;
+    }
+    .comp-table td:first-child { font-weight: 500; width: 28%; }
+    .comp-table td:nth-child(2) { color: #8B8E94; width: 32%; }
+    .comp-table td:nth-child(3) { color: #1A1A1E; font-weight: 500; }
+    .chk { color: #2E7D5B; }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .metric {
+      padding: 12px;
+      background: #F0F0EC;
+      text-align: center;
+    }
+    .metric-num {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: #2D5F8A;
+      line-height: 1;
+      margin-bottom: 2px;
+      font-variant-numeric: tabular-nums;
+    }
+    .metric-label {
+      font-size: 9px;
+      color: #5A5D64;
+      letter-spacing: 0.02em;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    .col-section { font-size: 11px; line-height: 1.55; color: #1A1A1E; }
+    .col-section ul { padding-left: 14px; margin-top: 4px; }
+    .col-section li { margin-bottom: 3px; }
+
+    .proof-bar {
+      margin-top: auto;
+      padding-top: 14px;
+      border-top: 1.5px solid #1A1A1E;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .proof-bar .left {
+      font-size: 10px;
+      color: #5A5D64;
+    }
+    .proof-bar .hash {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8.5px;
+      color: #8B8E94;
+      word-break: break-all;
+    }
+    .proof-bar .right {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: 12px;
+      color: #1A1A1E;
+      font-weight: 600;
+    }
+
+    @media print {
+      body { padding: 20mm 18mm 16mm; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="header-left">
+      <h1>Trustless Sovereignty Architecture</h1>
+      <div class="sub">BRIDGRAI — Sovereign AI Infrastructure for Europe</div>
+    </div>
+    <div class="header-right">
+      Mihai Ro&#537;ca<br>
+      BRIDGRAI Foundation<br>
+      September 2026
+    </div>
+  </div>
+
+  <div class="thesis">
+    <p><strong>Thesis:</strong> The EU AI Act (2024) and eIDAS 2.0 (Reg. 2024/1183) require AI systems to be auditable, sovereign, and cryptographically verifiable. No existing infrastructure delivers all three on edge hardware at zero cloud cost. BRIDGRAI does — and it has been running for 3.5 years on a single laptop with zero external funding, producing 120 blockchain-anchored IP assets and 717 passing tests.</p>
+  </div>
+
+  <h2>Market gap vs. delivered capability</h2>
+  <table class="comp-table">
+    <thead>
+      <tr><th>Requirement</th><th>Current standard</th><th>BRIDGRAI delivers</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Compute</td><td>Cloud (AWS / Azure / GCP)</td><td><span class="chk">&#10003;</span> Edge CPU — runs on Dell Latitude class</td></tr>
+      <tr><td>Data sovereignty</td><td>Provider jurisdiction</td><td><span class="chk">&#10003;</span> Local-first, eIDAS 2.0 EUDI Wallet ready</td></tr>
+      <tr><td>Cryptographic proof</td><td>TLS + rotating API keys</td><td><span class="chk">&#10003;</span> Ed25519 + ML-DSA-44 (FIPS 204) post-quantum</td></tr>
+      <tr><td>Immutable audit trail</td><td>Database logs (mutable)</td><td><span class="chk">&#10003;</span> Tezos mainnet — every asset hash-anchored</td></tr>
+      <tr><td>Human-AI alignment</td><td>RLHF (static, post-hoc)</td><td><span class="chk">&#10003;</span> RSI + Kuramoto oscillator (real-time, adaptive)</td></tr>
+      <tr><td>EU AI Act readiness</td><td>Vendor self-declaration</td><td><span class="chk">&#10003;</span> Verifiable by design — math, not marketing</td></tr>
+      <tr><td>Funding required</td><td>$10M+ seed round typical</td><td><span class="chk">&#10003;</span> &#x20AC;0 to date — fully bootstrapped</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Verified metrics</h2>
+  <div class="metrics">
+    <div class="metric"><div class="metric-num">120</div><div class="metric-label">IP assets on Tezos</div></div>
+    <div class="metric"><div class="metric-num">717</div><div class="metric-label">Tests passing</div></div>
+    <div class="metric"><div class="metric-num">225×</div><div class="metric-label">ScaleEngine speedup</div></div>
+    <div class="metric"><div class="metric-num">3.5y</div><div class="metric-label">Bootstrapped</div></div>
+  </div>
+
+  <div class="two-col">
+    <div class="col-section">
+      <h2>Technical stack</h2>
+      <ul>
+        <li><strong>UKBE Core</strong> — Kuramoto oscillator engine (open-source, AGPL-3.0)</li>
+        <li><strong>ScaleEngine</strong> — O(N) mean-field production variant (commercial)</li>
+        <li><strong>STILL&#8482; Notary</strong> — hybrid PQ signing gateway (Ed25519 + ML-DSA)</li>
+        <li><strong>Entropy Valve</strong> — prevents seal when system entropy is too high</li>
+        <li><strong>CrawlerAttach</strong> — validates AI crawlers via &#966;_intern before granting access</li>
+        <li><strong>9 autonomous agents</strong> — A2A protocol, each with Ed25519 identity</li>
+      </ul>
+    </div>
+    <div class="col-section">
+      <h2>Why now</h2>
+      <ul>
+        <li><strong>EU AI Act</strong> enters enforcement 2025&#8211;2027 — compliance infrastructure is pre-market</li>
+        <li><strong>eIDAS 2.0</strong> EUDI Wallet rollout 2026&#8211;2027 — BRIDGRAI has DID slot ready</li>
+        <li><strong>Post-quantum transition</strong> — NIST FIPS 204/203 finalized Aug 2024, adoption just starting</li>
+        <li><strong>Edge AI demand</strong> — data sovereignty regulations push compute to local hardware</li>
+        <li><strong>Zero-trust verification</strong> — market shifting from "trust the vendor" to "verify the math"</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="col-section" style="margin-bottom: 16px">
+    <h2>Live demo &amp; verification</h2>
+    <p>Interactive demo: <strong>amidigiart.github.io/bridgrai-demo</strong> — sign an intent with post-quantum cryptography directly in your browser, zero installation. Source code: <strong>github.com/amidigiart</strong> (75 public repositories). Blockchain proof: <strong>tzkt.io</strong> — search wallet tz1bmw3igCLN8N6CqgLBzJ9dyRb79E2Tdu5Q.</p>
+  </div>
+
+  <div class="proof-bar">
+    <div class="left">
+      <div>Document integrity — this page is hash-anchored on Tezos mainnet</div>
+      <div class="hash">Master hash v1.5: 6b50dbcdcf38600774f6175decff5c79d59b92b8a1100e4500f072bd3e9bb666</div>
+      <div class="hash">TX: ooBVxKpzHx3BAvkMGFSeDFCdMCVwF2n6cXjjAGiL978zAWARMLC</div>
+    </div>
+    <div class="right">S(M) = R</div>
+  </div>
+
+</body>
+</html>
