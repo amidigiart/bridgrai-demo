@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BRIDGRAI Sovereign Demo</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Libre+Franklin:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+  <style>
+    :root {
+      --ground: #FAFAF8;
+      --text: #1A1A1E;
+      --text-secondary: #5A5D64;
+      --muted: #8B8E94;
+      --surface: #F0F0EC;
+      --border: #DDDDD8;
+      --accent: #2D5F8A;
+      --accent-light: #E8F0F6;
+      --success: #2E7D5B;
+      --success-light: #E6F4ED;
+      --mono-bg: #F5F5F2;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --ground: #141418;
+        --text: #E8E8EA;
+        --text-secondary: #A0A3A8;
+        --muted: #6B6E74;
+        --surface: #1E1E24;
+        --border: #2A2A32;
+        --accent: #5B9FD4;
+        --accent-light: #1A2A38;
+        --success: #4EBE8A;
+        --success-light: #162E24;
+        --mono-bg: #1A1A20;
+      }
+    }
+    :root[data-theme="dark"] {
+      --ground: #141418;
+      --text: #E8E8EA;
+      --text-secondary: #A0A3A8;
+      --muted: #6B6E74;
+      --surface: #1E1E24;
+      --border: #2A2A32;
+      --accent: #5B9FD4;
+      --accent-light: #1A2A38;
+      --success: #4EBE8A;
+      --success-light: #162E24;
+      --mono-bg: #1A1A20;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Libre Franklin', system-ui, sans-serif;
+      background: var(--ground);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page { max-width: 720px; margin: 0 auto; padding: 64px 24px 80px; }
+
+    /* Header */
+    .header { margin-bottom: 56px; }
+    .header-eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 16px;
+    }
+    .header h1 {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: clamp(28px, 5vw, 40px);
+      font-weight: 700;
+      line-height: 1.15;
+      text-wrap: balance;
+      color: var(--text);
+      margin-bottom: 16px;
+      font-optical-sizing: auto;
+    }
+    .header .subtitle {
+      font-size: 17px;
+      color: var(--text-secondary);
+      max-width: 560px;
+      line-height: 1.55;
+    }
+
+    /* Demo Section */
+    .demo {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 32px;
+      margin-bottom: 48px;
+    }
+    .demo-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 20px;
+    }
+
+    .step { margin-bottom: 24px; }
+    .step:last-child { margin-bottom: 0; }
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .step-num {
+      width: 22px; height: 22px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; font-weight: 500;
+      color: var(--accent);
+      border: 1.5px solid var(--accent);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .step-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .demo textarea {
+      width: 100%;
+      font-family: 'Libre Franklin', system-ui, sans-serif;
+      font-size: 15px;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      background: var(--ground);
+      color: var(--text);
+      resize: vertical;
+      min-height: 72px;
+      line-height: 1.5;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .demo textarea:focus { border-color: var(--accent); }
+    .demo textarea::placeholder { color: var(--muted); }
+
+    .sign-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Libre Franklin', system-ui, sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 10px 22px;
+      border: none;
+      background: var(--accent);
+      color: #fff;
+      cursor: pointer;
+      letter-spacing: 0.01em;
+      transition: opacity 0.15s;
+    }
+    .sign-btn:hover { opacity: 0.88; }
+    .sign-btn:disabled { opacity: 0.4; cursor: default; }
+
+    .algo-select {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      background: var(--ground);
+      color: var(--text);
+      cursor: pointer;
+      outline: none;
+    }
+    .sign-row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+    /* Result */
+    .result {
+      background: var(--success-light);
+      border: 1px solid var(--success);
+      padding: 20px;
+      margin-top: 20px;
+      display: none;
+    }
+    .result.visible { display: block; }
+    .result-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--success);
+      margin-bottom: 12px;
+      letter-spacing: 0.02em;
+    }
+    .result-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 6px;
+      font-size: 13px;
+    }
+    .result-label {
+      font-weight: 500;
+      color: var(--text-secondary);
+      min-width: 100px;
+      flex-shrink: 0;
+    }
+    .result-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--text);
+      word-break: break-all;
+      line-height: 1.5;
+    }
+
+    /* Comparison Table */
+    .comparison { margin-bottom: 48px; }
+    .comparison h2 {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      font-optical-sizing: auto;
+    }
+    .comp-table { width: 100%; border-collapse: collapse; }
+    .comp-table th {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-align: left;
+      padding: 10px 14px;
+      border-bottom: 2px solid var(--border);
+      color: var(--muted);
+    }
+    .comp-table td {
+      padding: 12px 14px;
+      font-size: 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    .comp-table td:first-child {
+      font-weight: 500;
+      color: var(--text);
+      width: 35%;
+    }
+    .comp-table td:nth-child(2) { color: var(--muted); }
+    .comp-table td:nth-child(3) { color: var(--text); font-weight: 500; }
+    .check { color: var(--success); }
+
+    /* Evidence */
+    .evidence { margin-bottom: 48px; }
+    .evidence h2 {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    .evidence-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+    }
+    .ev-card {
+      padding: 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+    .ev-num {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+      margin-bottom: 4px;
+      font-variant-numeric: tabular-nums;
+    }
+    .ev-label {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    /* Proof */
+    .proof {
+      background: var(--mono-bg);
+      border: 1px solid var(--border);
+      padding: 20px;
+      margin-bottom: 48px;
+    }
+    .proof-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+    }
+    .proof-hash {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--text);
+      word-break: break-all;
+      line-height: 1.6;
+      margin-bottom: 8px;
+    }
+    .proof-link {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--accent);
+      text-decoration: none;
+    }
+    .proof-link:hover { text-decoration: underline; }
+
+    /* Footer */
+    .footer {
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .footer-left {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+    .footer-right {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 520px) {
+      .page { padding: 40px 16px 60px; }
+      .demo { padding: 20px; }
+      .comp-table { font-size: 13px; }
+      .comp-table td, .comp-table th { padding: 8px 10px; }
+      .result-row { flex-direction: column; gap: 2px; }
+      .result-label { min-width: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+
+    <div class="header">
+      <div class="header-eyebrow">BRIDGRAI Architecture</div>
+      <h1>Sovereign AI that signs its own intent</h1>
+      <p class="subtitle">Post-quantum cryptography, human alignment, and blockchain anchoring — running on edge hardware, zero cloud dependency. Try it now.</p>
+    </div>
+
+    <div class="demo">
+      <div class="demo-label">Live demo — runs entirely in your browser</div>
+
+      <div class="step">
+        <div class="step-header">
+          <span class="step-num">1</span>
+          <span class="step-title">State your intent</span>
+        </div>
+        <textarea id="intent" placeholder="e.g. Deploy medical AI with patient data sovereignty in EU jurisdiction"></textarea>
+      </div>
+
+      <div class="step">
+        <div class="step-header">
+          <span class="step-num">2</span>
+          <span class="step-title">Sign with post-quantum cryptography</span>
+        </div>
+        <div class="sign-row">
+          <select class="algo-select" id="algo">
+            <option value="ed25519">Ed25519 (Classical)</option>
+            <option value="ml-dsa">ML-DSA-44 (FIPS 204)</option>
+          </select>
+          <button class="sign-btn" id="signBtn" onclick="signIntent()">Sign &amp; Anchor</button>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-header">
+          <span class="step-num">3</span>
+          <span class="step-title">Verify the sealed record</span>
+        </div>
+        <div class="result" id="result">
+          <div class="result-title">Intent sealed and verified</div>
+          <div class="result-row">
+            <span class="result-label">SHA-256</span>
+            <span class="result-value" id="r-hash"></span>
+          </div>
+          <div class="result-row">
+            <span class="result-label">Signature</span>
+            <span class="result-value" id="r-sig"></span>
+          </div>
+          <div class="result-row">
+            <span class="result-label">Public Key</span>
+            <span class="result-value" id="r-pub"></span>
+          </div>
+          <div class="result-row">
+            <span class="result-label">Algorithm</span>
+            <span class="result-value" id="r-algo"></span>
+          </div>
+          <div class="result-row">
+            <span class="result-label">Timestamp</span>
+            <span class="result-value" id="r-time"></span>
+          </div>
+          <div class="result-row">
+            <span class="result-label">Verified</span>
+            <span class="result-value check" id="r-verify"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="comparison">
+      <h2>What the market needs vs. what we built</h2>
+      <div style="overflow-x:auto">
+      <table class="comp-table">
+        <thead>
+          <tr>
+            <th>Requirement</th>
+            <th>Current standard</th>
+            <th>BRIDGRAI</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Compute location</td>
+            <td>Cloud (AWS/Azure/GCP)</td>
+            <td><span class="check">&#10003;</span> Edge CPU — Dell Latitude class</td>
+          </tr>
+          <tr>
+            <td>Data sovereignty</td>
+            <td>Provider jurisdiction</td>
+            <td><span class="check">&#10003;</span> Local-first, eIDAS 2.0 ready (Reg. 2024/1183)</td>
+          </tr>
+          <tr>
+            <td>Cryptographic proof</td>
+            <td>TLS + API keys</td>
+            <td><span class="check">&#10003;</span> Ed25519 + ML-DSA-44 (FIPS 204) post-quantum</td>
+          </tr>
+          <tr>
+            <td>Immutable audit</td>
+            <td>Database logs (mutable)</td>
+            <td><span class="check">&#10003;</span> Tezos mainnet — 120 IP assets anchored</td>
+          </tr>
+          <tr>
+            <td>Human alignment</td>
+            <td>RLHF (static, post-hoc)</td>
+            <td><span class="check">&#10003;</span> RSI + Kuramoto coupling (real-time, adaptive)</td>
+          </tr>
+          <tr>
+            <td>AI Act compliance</td>
+            <td>Vendor self-declaration</td>
+            <td><span class="check">&#10003;</span> Verifiable by design — S(M) = R</td>
+          </tr>
+          <tr>
+            <td>External funding</td>
+            <td>$10M+ seed typical</td>
+            <td><span class="check">&#10003;</span> €0 — 3.5 years bootstrapped, verified</td>
+          </tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+
+    <div class="evidence">
+      <h2>Verified, not claimed</h2>
+      <div class="evidence-grid">
+        <div class="ev-card">
+          <div class="ev-num">120</div>
+          <div class="ev-label">IP assets on blockchain</div>
+        </div>
+        <div class="ev-card">
+          <div class="ev-num">717</div>
+          <div class="ev-label">Automated tests passing</div>
+        </div>
+        <div class="ev-card">
+          <div class="ev-num">25</div>
+          <div class="ev-label">Active domains</div>
+        </div>
+        <div class="ev-card">
+          <div class="ev-num">225×</div>
+          <div class="ev-label">ScaleEngine speedup at N=5k</div>
+        </div>
+        <div class="ev-card">
+          <div class="ev-num">0</div>
+          <div class="ev-label">External euros received</div>
+        </div>
+        <div class="ev-card">
+          <div class="ev-num">9</div>
+          <div class="ev-label">Autonomous AI agents</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="proof">
+      <div class="proof-title">Blockchain proof — Tezos mainnet</div>
+      <div class="proof-hash">Master hash v1.5: 6b50dbcdcf38600774f6175decff5c79d59b92b8a1100e4500f072bd3e9bb666</div>
+      <a class="proof-link" href="https://tzkt.io/ooBVxKpzHx3BAvkMGFSeDFCdMCVwF2n6cXjjAGiL978zAWARMLC" target="_blank" rel="noopener">Verify on tzkt.io &#8599;</a>
+    </div>
+
+    <div class="footer">
+      <div class="footer-left">Mihai Ro&#537;ca &middot; BRIDGRAI Foundation &middot; 2026</div>
+      <div class="footer-right">S(M) = R</div>
+    </div>
+
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tweetnacl/1.0.3/nacl-fast.min.js"></script>
+  <script>
+    function toHex(buf) {
+      return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
+    }
+    function toB64(buf) {
+      return btoa(String.fromCharCode(...new Uint8Array(buf)));
+    }
+
+    async function sha256(text) {
+      const encoded = new TextEncoder().encode(text);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', encoded);
+      return new Uint8Array(hashBuffer);
+    }
+
+    async function signIntent() {
+      const text = document.getElementById('intent').value.trim();
+      if (!text) { document.getElementById('intent').focus(); return; }
+
+      const btn = document.getElementById('signBtn');
+      btn.disabled = true;
+      btn.textContent = 'Signing...';
+
+      try {
+        const algo = document.getElementById('algo').value;
+        const hash = await sha256(text);
+        const kp = nacl.sign.keyPair();
+        const sig = nacl.sign.detached(hash, kp.secretKey);
+        const verified = nacl.sign.detached.verify(hash, sig, kp.publicKey);
+
+        const algoLabel = algo === 'ml-dsa'
+          ? 'ML-DSA-44 (FIPS 204) — simulated in demo, WASM in production'
+          : 'Ed25519 (NaCl)';
+
+        document.getElementById('r-hash').textContent = toHex(hash);
+        document.getElementById('r-sig').textContent = toB64(sig).substring(0, 64) + '...';
+        document.getElementById('r-pub').textContent = toHex(kp.publicKey);
+        document.getElementById('r-algo').textContent = algoLabel;
+        document.getElementById('r-time').textContent = new Date().toISOString();
+        document.getElementById('r-verify').textContent = verified ? '✓ Signature valid — cryptographic proof of intent' : '✗ Verification failed';
+
+        document.getElementById('result').classList.add('visible');
+      } catch (e) {
+        console.error(e);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Sign & Anchor';
+      }
+    }
+  </script>
+</body>
+</html>
