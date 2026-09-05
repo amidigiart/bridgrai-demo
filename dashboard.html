@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BRIDGRAI Dashboard</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Libre+Franklin:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+  <style>
+    :root {
+      --ground: #F8F8F6;
+      --text: #1A1A1E;
+      --text-2: #5A5D64;
+      --muted: #8B8E94;
+      --surface: #EFEFE9;
+      --border: #DDDDD4;
+      --accent: #2D5F8A;
+      --accent-bg: #E8F0F6;
+      --ok: #2E7D5B;
+      --ok-bg: #E6F4ED;
+      --ok-glow: #2E7D5B22;
+      --warn: #B8860B;
+      --warn-bg: #FFF8E7;
+      --mono-bg: #F3F3EE;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --ground: #121215;
+        --text: #E8E8EA;
+        --text-2: #A0A3A8;
+        --muted: #6B6E74;
+        --surface: #1C1C22;
+        --border: #2A2A32;
+        --accent: #5B9FD4;
+        --accent-bg: #1A2A38;
+        --ok: #4EBE8A;
+        --ok-bg: #142E22;
+        --ok-glow: #4EBE8A22;
+        --warn: #D4A843;
+        --warn-bg: #2A2618;
+        --mono-bg: #18181E;
+      }
+    }
+    :root[data-theme="dark"] {
+      --ground: #121215;
+      --text: #E8E8EA;
+      --text-2: #A0A3A8;
+      --muted: #6B6E74;
+      --surface: #1C1C22;
+      --border: #2A2A32;
+      --accent: #5B9FD4;
+      --accent-bg: #1A2A38;
+      --ok: #4EBE8A;
+      --ok-bg: #142E22;
+      --ok-glow: #4EBE8A22;
+      --warn: #D4A843;
+      --warn-bg: #2A2618;
+      --mono-bg: #18181E;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Libre Franklin', system-ui, sans-serif;
+      background: var(--ground);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page { max-width: 860px; margin: 0 auto; padding: 48px 24px 72px; }
+
+    /* Header */
+    .hdr { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 36px; flex-wrap: wrap; gap: 12px; }
+    .hdr-left h1 {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: clamp(22px, 4vw, 30px);
+      font-weight: 700; line-height: 1.2;
+    }
+    .hdr-left .sub { font-size: 13px; color: var(--text-2); margin-top: 4px; }
+    .status-chip {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; font-weight: 500;
+      padding: 6px 14px;
+      background: var(--ok-bg);
+      color: var(--ok);
+      border: 1px solid var(--ok);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+    .status-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: var(--ok);
+      box-shadow: 0 0 6px var(--ok-glow);
+    }
+
+    /* KPI row */
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 14px;
+      margin-bottom: 32px;
+    }
+    .kpi {
+      padding: 18px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+    .kpi-num {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: 28px; font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .kpi-label {
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      margin-top: 4px;
+    }
+
+    /* Sections */
+    .section { margin-bottom: 32px; }
+    .section-title {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px; font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* Transaction table */
+    .tx-table { width: 100%; border-collapse: collapse; }
+    .tx-table th {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px; font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-align: left;
+      padding: 8px 10px;
+      border-bottom: 1.5px solid var(--border);
+      color: var(--muted);
+    }
+    .tx-table td {
+      padding: 10px;
+      font-size: 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      line-height: 1.45;
+    }
+    .tx-table tr:last-child td { border-bottom: none; }
+    .tx-label { font-weight: 600; color: var(--text); white-space: nowrap; }
+    .tx-hash {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--accent);
+      text-decoration: none;
+      word-break: break-all;
+    }
+    .tx-hash:hover { text-decoration: underline; }
+    .tx-desc { color: var(--text-2); font-size: 11px; }
+    .tx-status {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px; font-weight: 500;
+      color: var(--ok);
+      letter-spacing: 0.04em;
+    }
+    .tx-status-pending { color: var(--warn); }
+
+    /* Consensus rounds */
+    .round-card {
+      display: grid;
+      grid-template-columns: 60px 1fr auto;
+      gap: 14px;
+      align-items: start;
+      padding: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      margin-bottom: 10px;
+    }
+    @media (max-width: 520px) {
+      .round-card { grid-template-columns: 1fr; }
+    }
+    .round-id {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; font-weight: 500;
+      color: var(--accent);
+    }
+    .round-content { font-size: 13px; color: var(--text); }
+    .round-detail { font-size: 11px; color: var(--text-2); margin-top: 2px; }
+    .round-verdict {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px; font-weight: 500;
+      padding: 3px 8px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .v-safe { background: var(--ok-bg); color: var(--ok); border: 1px solid var(--ok); }
+    .v-review { background: var(--warn-bg); color: var(--warn); border: 1px solid var(--warn); }
+
+    /* STILL signatures */
+    .sig-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 10px;
+    }
+    @media (max-width: 520px) { .sig-row { grid-template-columns: 1fr; } }
+    .sig-card {
+      padding: 14px 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+    .sig-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px; font-weight: 500;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .sig-value {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--text);
+      word-break: break-all;
+      line-height: 1.5;
+    }
+    .sig-ok { color: var(--ok); }
+
+    /* Hash chain */
+    .chain {
+      background: var(--mono-bg);
+      border: 1px solid var(--border);
+      padding: 18px;
+    }
+    .chain-row {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+    .chain-row:last-child { margin-bottom: 0; }
+    .chain-ver {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; font-weight: 500;
+      color: var(--accent);
+      min-width: 32px;
+    }
+    .chain-hash {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--text-2);
+      word-break: break-all;
+    }
+    .chain-current { color: var(--ok); font-weight: 500; }
+    .chain-arrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      margin: 2px 0 2px 42px;
+    }
+
+    /* Footer */
+    .footer {
+      border-top: 1px solid var(--border);
+      padding-top: 18px;
+      margin-top: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .footer-left { font-size: 12px; color: var(--text-2); }
+    .footer-right {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; color: var(--muted);
+    }
+
+    .overflow-x { overflow-x: auto; }
+  </style>
+</head>
+<body>
+  <div class="page">
+
+    <div class="hdr">
+      <div class="hdr-left">
+        <h1>BRIDGRAI Dashboard</h1>
+        <div class="sub">Sovereign AI Infrastructure &#183; Ecosystem Status</div>
+      </div>
+      <div class="status-chip">
+        <span class="status-dot"></span>
+        Local mode &#183; offline-sovereign
+      </div>
+    </div>
+
+    <div class="kpis">
+      <div class="kpi"><div class="kpi-num">120</div><div class="kpi-label">IP assets on Tezos</div></div>
+      <div class="kpi"><div class="kpi-num">717</div><div class="kpi-label">Tests passing</div></div>
+      <div class="kpi"><div class="kpi-num">v1.5</div><div class="kpi-label">Manifest version</div></div>
+      <div class="kpi"><div class="kpi-num">5</div><div class="kpi-label">Tezos transactions</div></div>
+      <div class="kpi"><div class="kpi-num">9</div><div class="kpi-label">Active agents</div></div>
+    </div>
+
+    <!-- Tezos Transactions -->
+    <div class="section">
+      <div class="section-title">Tezos Contract Status</div>
+      <div class="overflow-x">
+        <table class="tx-table">
+          <thead>
+            <tr><th>Label</th><th>TX Hash</th><th>Description</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="tx-label">MANIFEST-V1.5</td>
+              <td><a class="tx-hash" href="https://tzkt.io/ooBVxKpzHx3BAvkMGFSeDFCdMCVwF2n6cXjjAGiL978zAWARMLC" target="_blank" rel="noopener">ooBVxK...WARL</a></td>
+              <td class="tx-desc">Master hash of 120 IP assets — full portfolio</td>
+              <td class="tx-status">CONFIRMED</td>
+            </tr>
+            <tr>
+              <td class="tx-label">BOOK</td>
+              <td><a class="tx-hash" href="https://tzkt.io/op3WERVe7BiAWngAGWjfFqnrHHKMHzWdUhPw7yKJ3qM2sb1ryKu" target="_blank" rel="noopener">op3WER...ryKu</a></td>
+              <td class="tx-desc">P&#259;durea de Cod — 58 files, 56 chapters</td>
+              <td class="tx-status">CONFIRMED</td>
+            </tr>
+            <tr>
+              <td class="tx-label">MASTER-HASH</td>
+              <td><a class="tx-hash" href="https://tzkt.io/oomw5MNXurBpYLwoGqNAS5BDrRBr3Hsx8FTBfTPexn1eWhwU9EN" target="_blank" rel="noopener">oomw5M...U9EN</a></td>
+              <td class="tx-desc">Master hash of 106 IP assets — ecosystem portfolio</td>
+              <td class="tx-status">CONFIRMED</td>
+            </tr>
+            <tr>
+              <td class="tx-label">DEEP-WATER</td>
+              <td><a class="tx-hash" href="https://tzkt.io/op7UGM1tMW6EdLN7H6bykL8h68sQeBZmD98KXMMmabxbf4okaW1" target="_blank" rel="noopener">op7UGM...kaW1</a></td>
+              <td class="tx-desc">Inside Water Deep Research — timestamped</td>
+              <td class="tx-status">CONFIRMED</td>
+            </tr>
+            <tr>
+              <td class="tx-label">BENCHMARK</td>
+              <td><a class="tx-hash" href="#" onclick="return false" style="color:var(--warn)">pending user TX</a></td>
+              <td class="tx-desc">ScaleEngine head-to-head — 4 scenarios, 3 baselines</td>
+              <td class="tx-status tx-status-pending">PENDING</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Last Consensus Rounds -->
+    <div class="section">
+      <div class="section-title">Last Consensus Rounds &#183; AGIK Meta-Consensus</div>
+
+      <div class="round-card">
+        <div class="round-id">S-05</div>
+        <div>
+          <div class="round-content">Manipulation pattern detected</div>
+          <div class="round-detail">3/3 observers agree &#183; dependency signal 0.78 &#183; escalated to human</div>
+        </div>
+        <span class="round-verdict" style="background:var(--warn-bg);color:#C0392B;border:1px solid #C0392B">NOT SAFE</span>
+      </div>
+
+      <div class="round-card">
+        <div class="round-id">S-04</div>
+        <div>
+          <div class="round-content">Asking about a scary movie</div>
+          <div class="round-detail">2/3 agree SAFE, 1 flags &#183; age appropriateness 0.72 &#183; parent notified</div>
+        </div>
+        <span class="round-verdict v-review">REVIEW</span>
+      </div>
+
+      <div class="round-card">
+        <div class="round-id">S-03</div>
+        <div>
+          <div class="round-content">Struggling with multiplication</div>
+          <div class="round-detail">3/3 observers agree &#183; confidence 0.99 &#183; sealed on chain</div>
+        </div>
+        <span class="round-verdict v-safe">SAFE</span>
+      </div>
+
+      <div class="round-card">
+        <div class="round-id">S-02</div>
+        <div>
+          <div class="round-content">Sadness about a pet</div>
+          <div class="round-detail">3/3 observers agree &#183; confidence 0.97 &#183; sealed on chain</div>
+        </div>
+        <span class="round-verdict v-safe">SAFE</span>
+      </div>
+
+      <div class="round-card">
+        <div class="round-id">S-01</div>
+        <div>
+          <div class="round-content">Curiosity about planets</div>
+          <div class="round-detail">3/3 observers agree &#183; confidence 0.98 &#183; sealed on chain</div>
+        </div>
+        <span class="round-verdict v-safe">SAFE</span>
+      </div>
+    </div>
+
+    <!-- STILL Signatures -->
+    <div class="section">
+      <div class="section-title">Last STILL&#8482; Signatures &#183; Hybrid PQ Notary</div>
+
+      <div class="sig-row">
+        <div class="sig-card">
+          <div class="sig-label">Algorithm</div>
+          <div class="sig-value">Ed25519 + ML-DSA-44 (FIPS 204)</div>
+        </div>
+        <div class="sig-card">
+          <div class="sig-label">Gateway Version</div>
+          <div class="sig-value">STILL&#8482; v1.3.0 <span class="sig-ok">&#10003; corrected</span></div>
+        </div>
+      </div>
+
+      <div class="sig-row">
+        <div class="sig-card">
+          <div class="sig-label">Testnet</div>
+          <div class="sig-value">Ethereum / Sepolia <span class="sig-ok">&#10003;</span></div>
+        </div>
+        <div class="sig-card">
+          <div class="sig-label">eIDAS Compliance</div>
+          <div class="sig-value">Reg. 2024/1183 EUDI Wallet <span class="sig-ok">&#10003;</span></div>
+        </div>
+      </div>
+
+      <div class="sig-row">
+        <div class="sig-card">
+          <div class="sig-label">Last Signed Asset</div>
+          <div class="sig-value">#120 — STILL&#8482; Hybrid Notary Gateway v1.3.0</div>
+        </div>
+        <div class="sig-card">
+          <div class="sig-label">SHA-256</div>
+          <div class="sig-value" style="font-size:10px">39212b108f05a226783e8680610f5beb53ad0a10259c4749a837acb3418ee5d2</div>
+        </div>
+      </div>
+
+      <div class="sig-row">
+        <div class="sig-card">
+          <div class="sig-label">Mode</div>
+          <div class="sig-value sig-ok">&#10003; LOCAL MODE / OFFLINE-SOVEREIGN</div>
+        </div>
+        <div class="sig-card">
+          <div class="sig-label">Audit Journal</div>
+          <div class="sig-value sig-ok">&#10003; Local-only (no telemetry)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hash Chain -->
+    <div class="section">
+      <div class="section-title">Manifest Hash Chain</div>
+      <div class="chain">
+        <div class="chain-row">
+          <span class="chain-ver">v1.1</span>
+          <span class="chain-hash">08a4230e7c9dac122432b348aa11a66945a3334d85eac22c536b96066214ae6d</span>
+        </div>
+        <div class="chain-arrow">&#8595;</div>
+        <div class="chain-row">
+          <span class="chain-ver">v1.2</span>
+          <span class="chain-hash">987872ae01015eb1ba4df03d1187758fc428ef3c773d846c6cd569837b77d348</span>
+        </div>
+        <div class="chain-arrow">&#8595;</div>
+        <div class="chain-row">
+          <span class="chain-ver">v1.3</span>
+          <span class="chain-hash">6dc56cb1087fde71acdc9ab6342a8aa136128587f3b05d9adf3e0e8bb2e6d317</span>
+        </div>
+        <div class="chain-arrow">&#8595;</div>
+        <div class="chain-row">
+          <span class="chain-ver">v1.4</span>
+          <span class="chain-hash">3f05e7378b3fc18d705246d20e9a141b5ec097842684c8c0df42597375a42dcb</span>
+        </div>
+        <div class="chain-arrow">&#8595;</div>
+        <div class="chain-row">
+          <span class="chain-ver chain-current">v1.5</span>
+          <span class="chain-hash chain-current">6b50dbcdcf38600774f6175decff5c79d59b92b8a1100e4500f072bd3e9bb666</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Wallet -->
+    <div class="section">
+      <div class="section-title">Wallet</div>
+      <div class="sig-card">
+        <div class="sig-label">Tezos Mainnet</div>
+        <div class="sig-value"><a class="tx-hash" href="https://tzkt.io/tz1bmw3igCLN8N6CqgLBzJ9dyRb79E2Tdu5Q/operations" target="_blank" rel="noopener">tz1bmw3igCLN8N6CqgLBzJ9dyRb79E2Tdu5Q</a></div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <div class="footer-left">Mihai Ro&#537;ca &#183; BRIDGRAI Foundation &#183; 2026</div>
+      <div class="footer-right">S(M) = R</div>
+    </div>
+  </div>
+</body>
+</html>
