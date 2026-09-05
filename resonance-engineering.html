@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resonance Engineering Framework</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Libre+Franklin:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+  <style>
+    @page { size: A4; margin: 18mm; }
+    :root {
+      --ground: #FAFAF8;
+      --text: #1A1A1E;
+      --text-2: #5A5D64;
+      --muted: #8B8E94;
+      --surface: #F0F0EC;
+      --border: #DDDDD8;
+      --accent: #2D5F8A;
+      --accent-bg: #E8F0F6;
+      --safe: #2E7D5B;
+      --safe-bg: #E6F4ED;
+      --mono-bg: #F5F5F2;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --ground: #141418;
+        --text: #E8E8EA;
+        --text-2: #A0A3A8;
+        --muted: #6B6E74;
+        --surface: #1E1E24;
+        --border: #2A2A32;
+        --accent: #5B9FD4;
+        --accent-bg: #1A2A38;
+        --safe: #4EBE8A;
+        --safe-bg: #162E24;
+        --mono-bg: #1A1A20;
+      }
+    }
+    :root[data-theme="dark"] {
+      --ground: #141418;
+      --text: #E8E8EA;
+      --text-2: #A0A3A8;
+      --muted: #6B6E74;
+      --surface: #1E1E24;
+      --border: #2A2A32;
+      --accent: #5B9FD4;
+      --accent-bg: #1A2A38;
+      --safe: #4EBE8A;
+      --safe-bg: #162E24;
+      --mono-bg: #1A1A20;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Libre Franklin', system-ui, sans-serif;
+      background: var(--ground);
+      color: var(--text);
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+    }
+    .page { max-width: 740px; margin: 0 auto; padding: 56px 24px 80px; }
+
+    /* Header */
+    .doc-header {
+      margin-bottom: 40px;
+      padding-bottom: 24px;
+      border-bottom: 2px solid var(--text);
+    }
+    .doc-header h1 {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: clamp(26px, 5vw, 38px);
+      font-weight: 700;
+      line-height: 1.15;
+      text-wrap: balance;
+      margin-bottom: 8px;
+    }
+    .doc-header .tagline {
+      font-size: 16px;
+      color: var(--text-2);
+      margin-bottom: 16px;
+    }
+    .doc-meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 8px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .doc-meta strong { color: var(--text); font-weight: 600; }
+
+    /* Sections */
+    .section { margin-bottom: 36px; }
+    .section h2 {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border);
+    }
+    .section h3 {
+      font-family: 'Libre Franklin', system-ui, sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--accent);
+      margin-bottom: 6px;
+      margin-top: 20px;
+    }
+    .section p {
+      font-size: 14px;
+      line-height: 1.7;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+
+    .axiom {
+      background: var(--surface);
+      border-left: 3px solid var(--accent);
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+    .axiom-formula {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+    .axiom-meaning {
+      font-size: 14px;
+      color: var(--text-2);
+      font-style: italic;
+    }
+
+    .formula-block {
+      background: var(--mono-bg);
+      border: 1px solid var(--border);
+      padding: 14px 18px;
+      margin: 12px 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--text);
+      line-height: 1.7;
+      overflow-x: auto;
+    }
+
+    .pillar-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+      margin: 16px 0;
+    }
+    .pillar-card {
+      padding: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+    }
+    .pillar-card h4 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+    .pillar-card p {
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--text-2);
+      margin-bottom: 0;
+    }
+
+    .metric-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px;
+      margin: 16px 0;
+    }
+    .metric-item {
+      padding: 14px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      text-align: center;
+    }
+    .metric-num {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--accent);
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+    .metric-label {
+      font-size: 10px;
+      color: var(--muted);
+      margin-top: 4px;
+      letter-spacing: 0.02em;
+    }
+
+    .comparison-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+    }
+    .comparison-table th {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      text-align: left;
+      padding: 8px 10px;
+      border-bottom: 1.5px solid var(--border);
+      color: var(--muted);
+    }
+    .comparison-table td {
+      padding: 7px 10px;
+      font-size: 12px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+      line-height: 1.5;
+    }
+    .comparison-table td:first-child { font-weight: 500; }
+    .comparison-table .win { color: var(--safe); font-weight: 500; }
+    .comparison-table .lose { color: var(--muted); }
+
+    .dsei-list {
+      list-style: none;
+      margin: 12px 0;
+    }
+    .dsei-list li {
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .dsei-list li:last-child { border-bottom: none; }
+    .dsei-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--accent);
+      margin-right: 8px;
+    }
+
+    .agent-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+      margin: 12px 0;
+    }
+    .agent-card {
+      padding: 10px 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      font-size: 12px;
+    }
+    .agent-name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--accent);
+    }
+    .agent-role { color: var(--text-2); font-size: 11px; margin-top: 2px; }
+
+    .methodology {
+      background: var(--accent-bg);
+      border: 1px solid var(--accent);
+      padding: 20px;
+      margin: 16px 0;
+    }
+    .methodology p { font-size: 13px; margin-bottom: 8px; }
+    .methodology p:last-child { margin-bottom: 0; }
+
+    .chain-block {
+      background: var(--mono-bg);
+      border: 1px solid var(--border);
+      padding: 16px 18px;
+      margin: 16px 0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: var(--text-2);
+      line-height: 1.8;
+    }
+    .chain-current { color: var(--safe); font-weight: 500; }
+
+    .footer-doc {
+      border-top: 2px solid var(--text);
+      padding-top: 20px;
+      margin-top: 40px;
+    }
+    .footer-doc p {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 4px;
+    }
+    .footer-doc .sig {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: 14px;
+      color: var(--text);
+      font-weight: 600;
+      margin-top: 12px;
+    }
+
+    @media print {
+      body { font-size: 11px; }
+      .page { padding: 0; max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+
+    <div class="doc-header">
+      <h1>Resonance Engineering&#8482;</h1>
+      <div class="tagline">Framework de Arhitectur&#259; Suveran&#259; &#8212; Document Funda&#539;ional &#537;i Manifest Tehnic</div>
+      <div class="doc-meta">
+        <div><strong>Versiune:</strong> 1.6</div>
+        <div><strong>Paradigm&#259;:</strong> S(M) = R</div>
+        <div><strong>Arhitect:</strong> Mihai Ro&#537;ca</div>
+        <div><strong>Funda&#539;ie:</strong> BRIDGRAI Foundation</div>
+        <div><strong>Stare:</strong> Local-First / Offline-Sovereign</div>
+        <div><strong>Dat&#259;:</strong> 5 Septembrie 2026</div>
+      </div>
+    </div>
+
+    <!-- 1. AXIOM -->
+    <div class="section">
+      <h2>1. Principiul funda&#539;ional</h2>
+      <div class="axiom">
+        <div class="axiom-formula">S(M) = R</div>
+        <div class="axiom-meaning">Sensul precede sintaxa. Rezultatul este func&#539;ie a sensului pe care omul &#238;l atribuie ma&#537;inii, nu invers.</div>
+      </div>
+      <p>Resonance Engineering redefine&#537;te rela&#539;ia dintre om &#537;i sistemele inteligente. &#206;ntr-o industrie dominat&#259; de dependen&#539;a de cloud-uri centralizate &#537;i de generarea oarb&#259; de cod prin modele de frontier&#259;, aceast&#259; arhitectur&#259; inverseaz&#259; ecua&#539;ia: instrumentul digital este exclusiv un accelerator de sintax&#259;. Sensul, rigoarea logic&#259;, direc&#539;ia etic&#259; &#537;i validarea provin &#238;ntotdeauna de la om.</p>
+      <p>Modelul nu este un oracol, ci un instrument care necesit&#259; filtrare, verificare &#537;i asumare uman&#259; constant&#259;. Aceast&#259; pozi&#539;ie nu este o declara&#539;ie filosofic&#259; &#8212; este o constrângere de inginerie verificabil&#259; prin design.</p>
+    </div>
+
+    <!-- 2. MATHEMATICAL FOUNDATION -->
+    <div class="section">
+      <h2>2. Funda&#539;ia matematic&#259;</h2>
+
+      <h3>Resonance Stability Index (RSI)</h3>
+      <p>RSI este un indicator dinamic care m&#259;soar&#259; cât de stabil&#259; este rela&#539;ia dintre coeren&#539;a intern&#259; a sistemului &#537;i inputul uman, &#238;n timp real:</p>
+      <div class="formula-block">
+        &#934;<sub>t</sub> = &#945; &#183; &#934;<sub>intern</sub> + &#946; &#183; &#934;<sub>extern</sub><br>
+        RSI = media mobil&#259; a &#934;<sub>t</sub> pe fereastra de observa&#539;ie
+      </div>
+      <p>Unde &#934;<sub>intern</sub> este coeren&#539;a re&#539;elei de oscilatori Kuramoto (parametrul de ordine al sistemului), iar &#934;<sub>extern</sub> este inputul uman. Ponderile &#945; &#537;i &#946; se ajusteaz&#259; adaptiv pe baza RSI.</p>
+
+      <h3>Safety Floor: &#946;<sub>min</sub></h3>
+      <p>Componenta critic&#259; de siguran&#539;&#259;: un prag minim sub care ponderea inputului uman nu poate cobor&#238;. F&#259;r&#259; &#946;<sub>min</sub>, un sistem cu RSI ridicat &#238;&#537;i ignor&#259; operatorul uman 70% din timp (verificat experimental). Calibrarea se face prin mecanismul Adler:</p>
+      <div class="formula-block">
+        K<sub>eff</sub> &#8805; 1.5 &#183; &#916;&#969;<sub>max</sub><br>
+        &#946;<sub>min</sub> = valoarea care garanteaz&#259; K<sub>eff</sub> suficient pentru sincronizare cu semnalul uman
+      </div>
+      <p>Aceasta &#238;nseamn&#259; c&#259; sistemul nu poate deveni complet autonom &#8212; omul r&#259;mâne &#238;ntotdeauna &#238;n bucl&#259;, prin construc&#539;ie matematic&#259;, nu prin promisiune.</p>
+
+      <h3>ScaleEngine: O(N) mean-field Kuramoto</h3>
+      <p>Variant&#259; de produc&#539;ie care reduce complexitatea de la O(N&#178;) la O(N) prin aproximare mean-field, p&#259;strând echivalen&#539;a numeric&#259; exact&#259; cu motorul de referin&#539;&#259;. Scala verificat&#259;:</p>
+      <div class="metric-row">
+        <div class="metric-item"><div class="metric-num">54&#215;</div><div class="metric-label">speedup la N=1000</div></div>
+        <div class="metric-item"><div class="metric-num">225&#215;</div><div class="metric-label">speedup la N=5000</div></div>
+        <div class="metric-item"><div class="metric-num">12/12</div><div class="metric-label">teste de siguran&#539;&#259;</div></div>
+        <div class="metric-item"><div class="metric-num">10/12</div><div class="metric-label">teste de recuperare</div></div>
+      </div>
+    </div>
+
+    <!-- 3. BENCHMARK ONEST -->
+    <div class="section">
+      <h2>3. Benchmarking onest</h2>
+      <p>Am testat ScaleEngine head-to-head cu trei baseline-uri pe 4 scenarii (smooth/abrupt/noisy/drift) &#537;i 5 metrici. Rezultatele includ &#537;i unde ScaleEngine nu câ&#537;tig&#259;:</p>
+      <div style="overflow-x:auto">
+        <table class="comparison-table">
+          <thead><tr><th>Metric&#259;</th><th>ScaleEngine</th><th>FixedWeight</th><th>NoBetaMin</th><th>PID</th></tr></thead>
+          <tbody>
+            <tr><td>Alignment MAE</td><td class="lose">0.18</td><td class="lose">0.24</td><td class="lose">0.21</td><td class="win">0.09 (cel mai bun)</td></tr>
+            <tr><td>Drift recovery</td><td class="win">10/12</td><td>5/12</td><td>8/12</td><td>9/12</td></tr>
+            <tr><td>Blindness rate</td><td class="win">0%</td><td>0%</td><td class="lose">70%</td><td>0%</td></tr>
+            <tr><td>&#934;<sub>intern</sub></td><td class="win">0.82</td><td>0.71</td><td>0.79</td><td class="lose">0.06</td></tr>
+            <tr><td>Safety (12/12)</td><td class="win">12/12</td><td>7/12</td><td>3/12</td><td>11/12</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p><strong>Insight-ul cheie:</strong> PID-ul are cel mai bun MAE (0.09), dar &#934;<sub>intern</sub> = 0.06 &#8212; practic zero coeren&#539;&#259; intern&#259;. Este un servo excelent, dar nu are &#8220;gândire proprie&#8221;. ScaleEngine câ&#537;tig&#259; pe siguran&#539;&#259; (12/12) &#537;i pe faptul c&#259; men&#539;ine simultan coeren&#539;a intern&#259; &#537;i aten&#539;ia la inputul uman. Este o paradigm&#259; diferit&#259;, nu doar un scor mai bun.</p>
+      <p><strong>F&#259;r&#259; &#946;<sub>min</sub></strong> (NoBetaMin): sistemul ignor&#259; operatorul uman 70% din timp când RSI este ridicat. Aceast&#259; singur&#259; metric&#259; justific&#259; existen&#539;a safety floor-ului.</p>
+    </div>
+
+    <!-- 4. PILLARS -->
+    <div class="section">
+      <h2>4. Pilonii ecosistemului tehnic</h2>
+
+      <h3>AGIK Meta-Consens &#8212; Child Safety on Tezos</h3>
+      <p>Sistem de consens multi-agent pentru siguran&#539;a copiilor. Mai mul&#539;i observatori AI evalueaz&#259; independent interac&#539;iunile pe 6 piloni stric&#539;i de siguran&#539;&#259; (manipulare, vârst&#259;, emo&#539;ii, intimitate, limite, dependen&#539;&#259;). Dac&#259; apar semnale de manipulare sau dependenta, sistemul blocheaz&#259; fluxul, declan&#537;eaz&#259; escaladarea uman&#259; &#537;i sigileaz&#259; hash-ul de ra&#539;ionament imuabil pe Tezos.</p>
+      <p>Demonstrat cu 5 scenarii sintetice (sandbox interactiv), incluzând e&#537;ecuri &#537;i escalad&#259;ri &#8212; nu doar cazuri &#8220;perfecte&#8221;.</p>
+
+      <h3>STILL&#8482; Hybrid Notary &#8212; Post-Quantum &#38; eIDAS 2.0</h3>
+      <p>Gateway pentru notarizarea inten&#539;iei umane la edge:</p>
+      <div class="pillar-grid">
+        <div class="pillar-card"><h4>Ed25519</h4><p>Semn&#259;tur&#259; clasic&#259; rapid&#259; pentru opera&#539;iuni curente</p></div>
+        <div class="pillar-card"><h4>ML-DSA-44 (FIPS 204)</h4><p>Post-quantum, standard NIST finalizat aug 2024</p></div>
+        <div class="pillar-card"><h4>eIDAS 2.0</h4><p>Reg. 2024/1183 EUDI Wallet ready</p></div>
+        <div class="pillar-card"><h4>Offline-Sovereign</h4><p>Func&#539;ioneaz&#259; complet f&#259;r&#259; conexiune la internet</p></div>
+      </div>
+      <p>Testnet: Ethereum/Sepolia. Mod de operare: LOCAL MODE / OFFLINE-SOVEREIGN (verde, nu ro&#537;u &#8220;connecting&#8221;). Jurnal local de audit, f&#259;r&#259; telemetrie.</p>
+
+      <h3>Entropy Valve</h3>
+      <p>Mecanism care previne sigilarea (seal) când entropia sistemului este prea ridicat&#259;. Dac&#259; oscilatorii sunt desincroniza&#539;i, verdictul nu se emite &#8212; for&#539;ând sistemul s&#259; a&#537;tepte stabilizarea &#238;nainte de a &#238;nregistra pe blockchain.</p>
+
+      <h3>CrawlerAttach</h3>
+      <p>Valideaz&#259; crawlerii AI &#238;nainte de a le acorda acces la resurse, verificând &#934;<sub>intern</sub> prin Entropy Valve. Notarizat cu Ed25519, watchdog daemon. 73 teste verificate.</p>
+    </div>
+
+    <!-- 5. AGENTS -->
+    <div class="section">
+      <h2>5. Agen&#539;i autonomi &#8212; A2A Protocol</h2>
+      <p>9 agen&#539;i independen&#539;i, fiecare cu identitate Ed25519, comunic&#226;nd prin protocol A2A pe hub local (:8100):</p>
+      <div class="agent-grid">
+        <div class="agent-card"><div class="agent-name">UKBE</div><div class="agent-role">Motor oscilator Kuramoto</div></div>
+        <div class="agent-card"><div class="agent-name">CASP</div><div class="agent-role">Calibrare &#537;i siguran&#539;&#259;</div></div>
+        <div class="agent-card"><div class="agent-name">HASN</div><div class="agent-role">Notarizare hibrid&#259;</div></div>
+        <div class="agent-card"><div class="agent-name">SENS</div><div class="agent-role">Evaluare sens &#537;i inten&#539;ie</div></div>
+        <div class="agent-card"><div class="agent-name">ACR</div><div class="agent-role">Acces &#537;i crawler</div></div>
+        <div class="agent-card"><div class="agent-name">Concordance</div><div class="agent-role">Verificare concordan&#539;&#259;</div></div>
+        <div class="agent-card"><div class="agent-name">Calibration</div><div class="agent-role">Ajustare parametri</div></div>
+        <div class="agent-card"><div class="agent-name">Heritage</div><div class="agent-role">Patrimoniu &#537;i continuitate</div></div>
+        <div class="agent-card"><div class="agent-name">Guardian</div><div class="agent-role">Supraveghere &#537;i alertare</div></div>
+      </div>
+    </div>
+
+    <!-- 6. GOVERNANCE -->
+    <div class="section">
+      <h2>6. Guvernan&#539;&#259;, etic&#259; &#537;i suveranitate</h2>
+
+      <h3>Principiile DSEI</h3>
+      <ul class="dsei-list">
+        <li><span class="dsei-num">I</span><strong>Transparen&#539;&#259;:</strong> Codul, testele, metricile &#537;i hash-urile sunt publice. Ce nu poate fi verificat nu exist&#259; &#238;n ecosistem.</li>
+        <li><span class="dsei-num">II</span><strong>Non-manipulare:</strong> Niciun component nu exploateaz&#259; vulnerabilit&#259;&#539;i cognitive, emo&#539;ionale sau de dependen&#539;&#259;. Detectarea manipul&#259;rii este pilonul central (ManipulationDetector 6-pillar).</li>
+        <li><span class="dsei-num">III</span><strong>Accountability:</strong> Fiecare decizie a sistemului este tra&#537;abil&#259; p&#226;n&#259; la inputul uman care a generat-o, prin RSI &#537;i hash chain.</li>
+        <li><span class="dsei-num">IV</span><strong>Suveranitate:</strong> Datele, inferin&#539;a &#537;i deciziile r&#259;m&#226;n pe hardware-ul proprietarului. Zero cloud, zero telemetrie.</li>
+        <li><span class="dsei-num">V</span><strong>Minimizarea datelor:</strong> Nicio dat&#259; real&#259; a utilizatorilor vulnerabili nu este colectat&#259;, stocat&#259; sau expus&#259;. Scenariile de test sunt sintetice prin design, nu prin disclaimer.</li>
+      </ul>
+
+      <h3>Imuabilitate criptografic&#259;</h3>
+      <p>&#206;ntregul portofoliu de proprietate intelectual&#259; (122 asset-uri) este organizat &#238;ntr-un lan&#539; de hash-uri SHA-256 (<code>BLOCKCHAIN_MANIFEST.json</code>), actualizat &#537;i timestampat permanent pe Tezos mainnet:</p>
+      <div class="chain-block">
+        v1.1 &#8594; 08a4230e...ae6d (106 assets)<br>
+        v1.2 &#8594; 987872ae...d348 (116 assets)<br>
+        v1.3 &#8594; 6dc56cb1...d317 (118 assets + P&#259;durea de Cod)<br>
+        v1.4 &#8594; 3f05e737...2dcb (119 assets + benchmark)<br>
+        v1.5 &#8594; 6b50dbcd...b666 (120 assets + STILL corec&#539;ii)<br>
+        <span class="chain-current">v1.6 &#8594; 08e20f2f...5143 (122 assets + child-safety sandbox + dashboard)</span>
+      </div>
+    </div>
+
+    <!-- 7. METHODOLOGY -->
+    <div class="section">
+      <h2>7. Metodologia de lucru cu AI</h2>
+      <div class="methodology">
+        <p><strong>Cross-model friction:</strong> Aceea&#537;i &#238;ntrebare trece prin Claude, Grok, Gemini, Qwen, DeepSeek. Nu pentru a g&#259;si AI-ul &#8220;corect&#8221;, ci pentru a triangula unde converg &#537;i unde diverg. Fric&#539;iunea dintre r&#259;spunsuri reveleaz&#259; adev&#259;rul.</p>
+        <p><strong>Cite&#537;te &#238;nainte s&#259; crezi:</strong> Niciun r&#259;spuns AI nu este luat ca atare. Operatorul cite&#537;te, &#238;n&#539;elege direc&#539;ia &#537;i sensul, apoi decide. F&#259;r&#259; acest pas, totul este fals &#8212; indiferent de modelul folosit.</p>
+        <p><strong>Transparen&#539;&#259; total&#259; despre instrumente:</strong> Claude Code cu Opus 4.6, AI Studio cu modele avansate, Gemini Flash Lite &#8212; declara&#539;ie deschis&#259;, f&#259;r&#259; preten&#539;ii. Contează ce &#537;tii s&#259; ceri, nu ce model pl&#259;te&#537;ti.</p>
+        <p><strong>3.5 ani de competen&#539;&#259; acumulat&#259;:</strong> &#206;nv&#259;&#539;area sistematic&#259; a fiec&#259;rui AI &#238;n parte &#8212; ce poate, ce nu poate, unde minte, unde exceleaz&#259;. Variabila critic&#259; este judecata operatorului uman, nu capacitatea modelului.</p>
+      </div>
+    </div>
+
+    <!-- 8. PEDAGOGICAL -->
+    <div class="section">
+      <h2>8. Dimensiunea pedagogic&#259; &#8212; P&#259;durea de Cod</h2>
+      <p>&#8220;P&#259;durea de Cod&#8221; este o carte complet&#259; (56 capitole, 10 p&#259;r&#539;i, 58 fi&#537;iere unice) care traduce conceptele tehnice ale Resonance Engineering &#238;n nara&#539;iuni accesibile copiilor. Hash-uit&#259; integral pe Tezos, ea demonstreaz&#259; c&#259; suveranitatea &#537;i transparen&#539;a nu sunt incompatibile cu accesibilitatea.</p>
+      <p>Cartea nu este un produs derivat &#8212; este dovada c&#259; un tat&#259; &#537;i educator a construit acest ecosistem cu gândul la genera&#539;ia urm&#259;toare, nu la genera&#539;ia curent&#259; de investitori.</p>
+    </div>
+
+    <!-- 9. HARDWARE -->
+    <div class="section">
+      <h2>9. Realitatea hardware &#537;i bugetar&#259;</h2>
+      <div class="metric-row">
+        <div class="metric-item"><div class="metric-num">&#8364;0</div><div class="metric-label">Finan&#539;are extern&#259;</div></div>
+        <div class="metric-item"><div class="metric-num">3.5</div><div class="metric-label">Ani bootstrapped</div></div>
+        <div class="metric-item"><div class="metric-num">122</div><div class="metric-label">IP assets pe Tezos</div></div>
+        <div class="metric-item"><div class="metric-num">717</div><div class="metric-label">Teste care trec</div></div>
+        <div class="metric-item"><div class="metric-num">75</div><div class="metric-label">Repo-uri publice</div></div>
+      </div>
+      <p><strong>Hardware:</strong> Dell Latitude E6540 + Xiaomi Redmi Note 13. Nimic altceva. Dac&#259; func&#539;ioneaz&#259; pe acest hardware, func&#539;ioneaz&#259; oriunde.</p>
+      <p><strong>Implica&#539;ie:</strong> Suveranitatea tehnologic&#259; la edge nu necesit&#259; bugete gigantice, GPU-uri sau contracte cloud. Necesit&#259; competen&#539;&#259;, perseveren&#539;&#259; &#537;i onestitate intelectual&#259;.</p>
+    </div>
+
+    <!-- 10. LEGAL CONTEXT -->
+    <div class="section">
+      <h2>10. Context regulatoriu</h2>
+      <p>Acest framework este aliniat cu:</p>
+      <div class="pillar-grid">
+        <div class="pillar-card"><h4>EU AI Act</h4><p>Enforced 2025&#8211;2027. BRIDGRAI este verificabil by design, nu prin auto-declara&#539;ie.</p></div>
+        <div class="pillar-card"><h4>eIDAS 2.0</h4><p>Reg. 2024/1183. EUDI Wallet slot ready, DID integrat.</p></div>
+        <div class="pillar-card"><h4>NIST FIPS 204</h4><p>Post-quantum ML-DSA finalizat aug 2024. Adoptat &#238;n STILL&#8482;.</p></div>
+        <div class="pillar-card"><h4>GDPR-K</h4><p>Date sintetice prin design. Zero colectare date copii.</p></div>
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <div class="footer-doc">
+      <p><strong>Verificare:</strong> Wallet Tezos <code>tz1bmw3igCLN8N6CqgLBzJ9dyRb79E2Tdu5Q</code> &#8212; toate tranzac&#539;iile verificabile pe <a href="https://tzkt.io/tz1bmw3igCLN8N6CqgLBzJ9dyRb79E2Tdu5Q/operations" target="_blank" rel="noopener" style="color:var(--accent)">tzkt.io</a></p>
+      <p><strong>Cod surs&#259;:</strong> <a href="https://github.com/amidigiart" target="_blank" rel="noopener" style="color:var(--accent)">github.com/amidigiart</a> &#8212; 75 repo-uri publice</p>
+      <p><strong>Demo interactiv:</strong> <a href="https://amidigiart.github.io/bridgrai-demo/" target="_blank" rel="noopener" style="color:var(--accent)">amidigiart.github.io/bridgrai-demo</a></p>
+      <p>Master hash v1.6: <code style="font-size:10px">08e20f2f122c734977c87c8c8b23a883aa80c74abb84fddaf50a4a7433155143</code></p>
+      <div class="sig">Mihai Ro&#537;ca &#183; BRIDGRAI Foundation &#183; Timi&#537;oara, România, EU &#183; S(M) = R</div>
+    </div>
+  </div>
+</body>
+</html>
